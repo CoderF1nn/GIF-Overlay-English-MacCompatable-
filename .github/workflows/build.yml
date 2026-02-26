@@ -6,10 +6,10 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4  # Updated from v3 to v4
+        uses: actions/checkout@v4  # Updated to v4 to prevent deprecation errors
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5 # Updated to v5 for better stability
         with:
           python-version: '3.9'
 
@@ -19,11 +19,12 @@ jobs:
 
       - name: Build with PyInstaller
         run: |
-          # Use the exact filename from your repo
-          pyinstaller --noconsole --onefile --windowed "GIF Overlay.py"
+          # --add-data ensures the icon is packed inside the app bundle
+          # We use quotes around "GIF Overlay.py" because of the space in the filename
+          pyinstaller --noconsole --onefile --windowed --add-data "app_icon.ico:." "GIF Overlay.py"
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4  # Updated from v3 to v4
+        uses: actions/upload-artifact@v4  # Updated to v4 to ensure the build completes
         with:
           name: Mac-App-Bundle
-          path: dist/*.app  # Using a wildcard to ensure it grabs the bundle
+          path: dist/GIF Overlay.app
